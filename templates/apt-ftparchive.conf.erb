@@ -1,0 +1,22 @@
+Dir {
+    ArchiveDir "<%= rootdir %>";
+    CacheDir "<%= rootdir %>/.scratch";
+};
+
+Default {
+    Packages::Extensions ".deb";
+    Packages::Compress ". gzip bzip2";
+    Sources::Compress ". gzip bzip2";
+    Contents::Compress "gzip bzip2";
+
+};
+
+TreeDefault {
+    BinCacheDB "packages-$(SECTION)-$(ARCH).db";
+    Directory "pool/$(DIST)/$(SECTION)";
+    SrcDirectory "pool/$(DIST)/$(SECTION)";
+    Packages "$(DIST)/$(SECTION)/binary-$(ARCH)/Packages";
+    Contents "$(DIST)/Contents-$(ARCH)";
+
+};
+

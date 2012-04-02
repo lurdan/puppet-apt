@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+REPOROOT=$1
+GPGID=$2
+
+/usr/bin/apt-ftparchive -q=2 generate $REPOROOT/apt-ftparchive.conf
+
+ls $REPOROOT/dists | while read DIST
+do
+  rm -f $REPOROOT/dists/$DIST/Release*
+  /usr/bin/apt-ftparchive -q release -c $REPOROOT/apt-release-$DIST.conf $REPOROOT/dists/$DIST > $REPOROOT/dists/$DIST/Release
+  /usr/bin/gpg --batch --yes --sign -ba --default-key $GPGID -o $REPOROOT/dists/$DIST/Release.gpg $REPOROOT/dists/$DIST/Release
+done
+
+exit 0
