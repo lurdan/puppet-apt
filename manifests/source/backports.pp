@@ -18,7 +18,7 @@ class apt::source::backports ( $priority = '600' ) {
     }
     apt::preference { 'backports':
       package => '*',
-      pin => 'release a=${::lsbdistcodename}-backports',
+      pin => "release a=${::lsbdistcodename}-backports",
       priority => $priority,
     }
   }
