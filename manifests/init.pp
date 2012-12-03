@@ -28,14 +28,14 @@ class apt ( $repo = false ) {
   }
 
   file { '/etc/apt/sources.list':
-    content => template('apt/sources.list.erb'),
+    ensure => present,
     notify => Exec['apt-updated'],
   }
 
   exec {
     'apt-updated':
       command => '/usr/bin/apt-get update',
-      refreshonly => true;
+#      refreshonly => true;
 ## uncomment after puppet issues #6748, #7422, #8050 solved
 #    'apt-preseed-cleanup':
 #      command => '/usr/bin/rm -f /var/cache/debconf/*.preseed',

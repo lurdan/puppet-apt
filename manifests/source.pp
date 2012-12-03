@@ -10,19 +10,25 @@
 #
 # Sample Usage:
 #
-define apt::source ( $type = 'both', $url, $dist, $components = 'main', $keyurl = '', $keysig = false ) {
+define apt::source (
+  $url,
+  $dist,
+  $components = 'main',
+  $type = 'both',
+  $keyurl = '',
+  $keysig = false
+  ) {
   $lines = "$url $dist $components"
   $content = $type ? {
     'deb' => "deb $lines",
     'src' => "deb-src $lines",
-    default => "deb $lines
-deb-src $lines",
+    default => "deb $lines\ndeb-src $lines",
   }
 
   file { "/etc/apt/sources.list.d/${name}.list":
     ensure => present,
     content => $content,
-    #before => Exec['apt-updated'];
+    before => Exec['apt-updated'];
   }
 
   if $keysig {
@@ -33,5 +39,5 @@ deb-src $lines",
   }
 }
 
-define apt::source::ppa () {
-}
+#define apt::source::ppa () {
+#}

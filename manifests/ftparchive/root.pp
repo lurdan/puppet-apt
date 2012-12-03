@@ -3,12 +3,17 @@
 #    rootdir => '/path/to/repo/debian',
 #    gpgid => 'abcde123',
 #  }
-define apt::ftparchive::root ( $rootdir, $gpgid ) {
+define apt::ftparchive::root (
+  $rootdir,
+  $owner = 'root',
+  $group = 'root',
+  $gpgid ) {
 
 #  exec { "make-${rootdir}":
 #    command => "/bin/mkdir -p ${rootdir}/dists ${rootdir}/pool/dists ${rootdir}/.scratch",
 #  }
   file { "$rootdir":
+    owner => $owner, group => $group,
     source => 'puppet:///modules/apt/ftparchive-rootdir',
     recurse => true,
 #    ensure => directory,
@@ -26,7 +31,9 @@ define apt::ftparchive::root ( $rootdir, $gpgid ) {
 
   exec { "update-apt-archive-${rootdir}":
     command => "/usr/local/bin/update-apt-archive ${rootdir} ${gpgid}",
-    require => [ File['/usr/local/bin/update-apt-archive'], Concat["${rootdir}/apt-ftparchive.conf"] ]
+    require => [ File['/usr/local/bin/update-apt-archive'],
+                 Concat["${rootdir}/apt-ftparchive.conf"], ]
   }
   Apt::Ftparchive::Dist <| |> -> Exec["update-apt-archive-${rootdir}"]
 }
+

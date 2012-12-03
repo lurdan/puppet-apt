@@ -7,7 +7,16 @@
 #     vendor => 'mydomain'
 #   }
 #
-define apt::ftparchive::dist ( $rootdir, $archs, $sections = 'main', $source = 'false', $vendor, $keysig ) {
+define apt::ftparchive::dist (
+  $rootdir,
+  $owner = 'root',
+  $group = 'root',
+  $archs,
+  $sections = 'main',
+  $source = 'false',
+  $vendor,
+  $keysig ) {
+
   File {
     require => File["$rootdir"],
     notify => Exec["update-apt-archive-${rootdir}"],
@@ -16,10 +25,10 @@ define apt::ftparchive::dist ( $rootdir, $archs, $sections = 'main', $source = '
 
   file {
     "$rootdir/dists/$name":
-      ensure => directory,
+      ensure => directory, owner => $owner, group => $group,
       source => 'puppet:///modules/apt/ftparchive-distsdir';
     "$rootdir/pool/dists/$name":
-      ensure => directory,
+      ensure => directory, owner => $owner, group => $group,
       source => 'puppet:///modules/apt/ftparchive-pooldir';
     "$rootdir/apt-release-$name.conf":
       content => template('apt/apt-release.conf.erb');
