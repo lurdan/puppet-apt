@@ -11,7 +11,12 @@
 #
 # Sample Usage:
 #
-class apt ( $repo = false ) {
+class apt (
+  $repo = false,
+  $sources_list = false
+  ) {
+
+
   package {
     'debian-archive-keyring':
       ensure => latest;
@@ -25,17 +30,23 @@ class apt ( $repo = false ) {
     }
     'reprepro': {
     }
+    default: {
+    }
   }
 
   file { '/etc/apt/sources.list':
     ensure => present,
+    content => $sources_list ? {
+      false => undef,
+      default => $sources_list,
+    },
     notify => Exec['apt-updated'],
   }
 
   exec {
     'apt-updated':
-      command => '/usr/bin/apt-get update',
-#      refreshonly => true;
+#      refreshonly => true,
+      command => '/usr/bin/apt-get update';
 ## uncomment after puppet issues #6748, #7422, #8050 solved
 #    'apt-preseed-cleanup':
 #      command => '/usr/bin/rm -f /var/cache/debconf/*.preseed',
@@ -47,3 +58,4 @@ class apt ( $repo = false ) {
   Apt::Preference <| |> -> Exec['apt-updated']
   Exec['apt-updated'] -> Package <| |> #-> Exec['apt-preseed-cleanup']
 }
+
