@@ -28,13 +28,14 @@ define apt::source (
   file { "/etc/apt/sources.list.d/${name}.list":
     ensure => present,
     content => $content,
-    before => Exec['apt-updated'];
+    notify => Exec['apt-updated'],
   }
 
   if $keysig {
     apt::key { "$name":
       source => $keyurl,
       keysig => $keysig,
+      notify => Exec['apt-updated'],
     }
   }
 }
