@@ -13,7 +13,10 @@
 class apt::source::backports ( $priority = '600' ) {
   if $::lsbdistcodename != 'sid' {
     apt::source { 'backports':
-      url => 'http://backports.debian.org/debian-backports',
+      url => $::lsbdistcodename ? {
+        /(squeeze)/ => 'http://backports.debian.org/debian-backports',
+        default => 'http://ftp.jp.debian.org/debian',
+      },
       dist => "${::lsbdistcodename}-backports",
     }
     apt::preference { 'backports':

@@ -13,9 +13,9 @@
 #
 class apt (
   $repo = false,
+  $mirror = 'http://cdn.debian.net/debian',
   $sources_list = false
   ) {
-
 
   package {
     'debian-archive-keyring':

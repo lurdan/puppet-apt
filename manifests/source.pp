@@ -11,8 +11,8 @@
 # Sample Usage:
 #
 define apt::source (
-  $url,
-  $dist,
+  $url = "${apt::mirror}",
+  $dist = 'stable',
   $components = 'main',
   $type = 'both',
   $keyurl = '',
